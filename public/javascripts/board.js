@@ -153,17 +153,12 @@ async function updateNames() {
 var modal = document.getElementById("createGame");
 var close = document.getElementsByClassName("close")[0];
 var submitButton = document.getElementById("submitButton");
+var textfield = document.getElementById("nameField");
 var nickname = document.getElementById("nameField").value;
 
-nickname.addEventListener("keyup", function(event) {
-    if (event.keyCode === 13) {
-        // Cancel the default action, if needed
-        event.preventDefault();
-        // Trigger the button element with a click
-
-        submitButton.click();
-    }
-});
+textfield.onsubmit = function() {
+    submitButton.click();
+}
 
 submitButton.onclick = function() {
     if (validate()) {
