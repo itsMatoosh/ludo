@@ -33,6 +33,8 @@ async function updateMain() {
         playerNum += games.data[i].players;
     }
     playersOnline.innerHTML = playerNum.toString();
+    var stats = await axios.get(`${backAddr}/stats`);
+    completedGames.innerHTML = stats.data.gamesCompleted;
 
     // updating game list  
     // <tr>
