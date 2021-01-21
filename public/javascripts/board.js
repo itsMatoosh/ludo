@@ -124,7 +124,8 @@ function validate() {
 }
 
 // assign nickname to players (from modal)
-async function assignName() {
+async function assignName(e) {
+    e.preventDefault();
     var nickname = document.getElementById("nameField").value;
     console.log(nickname);
 
