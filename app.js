@@ -26,7 +26,7 @@ app.get('/', async (req, res) => {
   var games = await gameRouter.getOnGoingGames()
   var players = 0
   for(game of games) {
-    player += game.players
+    players += game.players
   }
   res.render('index', {
     ongoingGames: games.length,
