@@ -1,21 +1,28 @@
 var express = require('express')
 var router = express.Router({mergeParams: true})
 
-const db = require('../../index').db
-
 // nickname change event emitter
 const EventEmitter = require('events');
 const nicknameChanged = new EventEmitter()
 
+// database reference
+var db;
+
 // initializes the game database
-async function initDB() {
+async function init(database) {
     // prepare the nicknames database
+    db = database
     await db.run(`CREATE TABLE IF NOT EXISTS nicknames (player INTEGER NOT NULL PRIMARY KEY, nickname varchar(15))`)
 }
 
 // gets a nickname from db
 async function getNickname(playerId) {
-    return (await db.get('SELECT nickname FROM nicknames WHERE player = ?', [playerId]))?.nickname
+    var query = await db.get('SELECT nickname FROM nicknames WHERE player = ?', [playerId])
+    if(query != undefined) {
+        return query.nickname
+    } else {
+        return undefined
+    }
 }
 
 // creates a nickname in db
@@ -33,9 +40,13 @@ async function updateNickname(gameId, playerId, nickname) {
 
 // removes a nickname from db
 async function removeNickname(playerId) {
-    var gameId = (await db.get('SELECT gameId FROM board WHERE player = ?', [playerId]))?.gameId
-    await db.run(`DELETE FROM nicknames WHERE player=?`, [playerId])
-    nicknameChanged.emit('nicknameChanged', gameId, playerId)
+    var query = await db.get('SELECT gameId FROM board WHERE player = ?', [playerId])
+    if(query != undefined) {
+        await db.run(`DELETE FROM nicknames WHERE player=?`, [playerId])
+        nicknameChanged.emit('nicknameChanged', query.gameId, playerId)
+    } else {
+        return undefined
+    }
 }
 
 // get all player's nicknames
@@ -93,10 +104,8 @@ router.put('/:playerId/nickname', async (req, res) => {
     }
 })
 
-// init nickname db
-initDB()
-
 module.exports.router = router
+module.exports.init = init
 module.exports.nicknameChanged = nicknameChanged
 module.exports.removeNickname = removeNickname
 module.exports.createNickname = createNickname

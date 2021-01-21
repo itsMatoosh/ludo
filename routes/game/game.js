@@ -1,16 +1,15 @@
 var express = require('express')
-const util = require('util')
 var router = express.Router()
 
 // get player manager
-const playerManager = require('./player/player')
-
-// get database
-const db = require('../index').db
+const playerRouter = require('./player/player')
 
 // game event emitter
 const EventEmitter = require('events');
 const gameEvent = new EventEmitter()
+
+// database reference
+var db;
 
 // game info class
 function GameInfo (gameId, start_color, moves, sixes, consecutive_sixes) {
@@ -26,11 +25,16 @@ function GameInfo (gameId, start_color, moves, sixes, consecutive_sixes) {
 }
 
 // initializes the game database
-async function initDB() {
+async function init(database) {
+    db = database
+
     // board table stores position of pawns of each player in the game
     await db.run(`CREATE TABLE IF NOT EXISTS board (gameId varchar(5), player int, color int, balance int DEFAULT 0, p0 int DEFAULT -1, p1 int DEFAULT -1, p2 int DEFAULT -1, p3 int DEFAULT -1)`)
     // game table stores game start color and current number of moves
     await db.run(`CREATE TABLE IF NOT EXISTS game (gameId varchar(5), start_color int DEFAULT 0, moves int DEFAULT 0, sixes int DEFAULT 0, consecutiveSixes DEFAULT 0)`)
+
+    // init player
+    await playerRouter.init(database)
 }
 
 // generates a unique game id
@@ -126,8 +130,9 @@ async function createPlayer(gameId, playerId) {
 async function removePlayer(playerId) {
     console.log(`Player ${playerId} left the game!`)
 
-    // get game which the player was playing
-    var gameId = await db.get('SELECT gameId FROM board WHERE player = ?', [playerId])?.gameId
+    var query = await db.get('SELECT gameId FROM board WHERE player = ?', [playerId])
+    var gameId;
+    if(query != undefined) gameId = query.gameId
     var lastGhostId = -1
     if(gameId) {
         // check if game should now be removed
@@ -476,7 +481,7 @@ router.ws('/:id/live', async (ws, req) => {
             }
         }
     }
-    playerManager.nicknameChanged.addListener('nicknameChanged', nicknameChangedListener)
+    playerRouter.nicknameChanged.addListener('nicknameChanged', nicknameChangedListener)
     // dice event
     var diceEventListener = (gameId, pId, roll) => {
         if(req.params.id == gameId) {
@@ -494,7 +499,7 @@ router.ws('/:id/live', async (ws, req) => {
     // victory event
     var victoryEventListener = async (gameId, pId, color) => {
         if(req.params.id == gameId) {
-            var nickname = await playerManager.getNickname(pId)
+            var nickname = await playerRouter.getNickname(pId)
             ws.close(1000, `${nickname} (${BOARD_COLORS[color]}) won the game.\nWell played!`)
         }
     }
@@ -510,14 +515,14 @@ router.ws('/:id/live', async (ws, req) => {
     // remove player on disconnection
     ws.on('close', (code, reason) => {
         // events
-        playerManager.nicknameChanged.removeListener('nicknameChanged', nicknameChangedListener)
+        playerRouter.nicknameChanged.removeListener('nicknameChanged', nicknameChangedListener)
         gameEvent.removeListener('diceRoll', diceEventListener)
         gameEvent.removeListener('pawnMove', pawnEventListener)
         gameEvent.removeListener('playerWin', victoryEventListener)
         gameEvent.removeListener('pawnMurder', murderEventListener)
         
         // rest
-        playerManager.removeNickname(ws._socket.remotePort)
+        playerRouter.removeNickname(ws._socket.remotePort)
         removePlayer(ws._socket.remotePort)
     })
 
@@ -541,7 +546,7 @@ router.ws('/:id/live', async (ws, req) => {
     var playerId = await createPlayer(req.params.id, ws._socket.remotePort)
 
     // create nickname entry for player
-    await playerManager.createNickname(req.params.id, playerId, 'Anonymous')
+    await playerRouter.createNickname(req.params.id, playerId, 'Anonymous')
 
     // send ready signal to player
     if (ws.readyState === 1) {
@@ -714,10 +719,8 @@ router.post('/', async (req, res) => {
 })
 
 // player subsection
-router.use('/:id/player', playerManager.router)
+router.use('/:id/player', playerRouter.router)
 
-// initialize database
-initDB()
-
-// export router
-module.exports = router
+// export init and router
+module.exports.router = router
+module.exports.init = init
