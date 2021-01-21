@@ -125,6 +125,7 @@ function validate() {
 
 // assign nickname to players (from modal)
 async function assignName() {
+    var nickname = document.getElementById("nameField").value;
     console.log(nickname);
 
     await axios.put(`${backAddr}/games/${gameId}/player/${playerId}/nickname`, {nickname});
@@ -154,7 +155,6 @@ var modal = document.getElementById("createGame");
 var close = document.getElementsByClassName("close")[0];
 var submitButton = document.getElementById("submitButton");
 var textfield = document.getElementById("nameField");
-var nickname = document.getElementById("nameField").value;
 
 textfield.onsubmit = function() {
     submitButton.click();
