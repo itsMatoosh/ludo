@@ -1,8 +1,11 @@
 var express = require('express')
 var router = express.Router()
 
-// get player manager
+// get player router
 const playerRouter = require('./player/player')
+
+// get stats router
+const statsRouter = require('./../stats/stats')
 
 // game event emitter
 const EventEmitter = require('events');
@@ -314,6 +317,9 @@ async function doPawnMove(gameId, playerId, pawn, spaces) {
             if(posFromStartAfterMove == 55) {
                 // player wins
                 console.log(`Player ${playerInfo.player} won the game: ${gameInfo.gameId}`)
+
+                // game completed
+                await statsRouter.onGameCompleted()
 
                 // event
                 gameEvent.emit('playerWin', gameId, playerId, playerInfo.color)
