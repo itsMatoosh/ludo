@@ -1,0 +1,135 @@
+body {
+    font-family: 'Bangers', cursive;
+}
+
+#buttonArea {
+    width: fit-content;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.buttonClass {
+    border: 5px solid #e99700;
+    color: #FFFFFF;
+    padding: 15px 30px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 42px;
+    font-family: 'Bangers', cursive;
+    text-shadow: 5px 0 0 #000, -5px 0 0 #000, 0 5px 0 #000, 0 -5px 0 #000, 4px 4px #000, -4px -4px 0 #000, 4px -4px 0 #000, -4px 4px 0 #000;
+    cursor: pointer;
+    border-radius: 10px;
+    margin: 10px;
+    
+}
+
+@keyframes colorAnimation {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+#quickGameButton {
+    background: linear-gradient(90deg, #f7d050, #e71a1a);
+    animation: colorAnimation 5s linear infinite;
+    background-size: 400% 400%;
+}
+
+#createGameButton {
+    background: linear-gradient(90deg, #e71a1a, #f7d050);
+    animation: colorAnimation 5s linear infinite;
+    background-size: 400% 400%;
+}
+
+#createGameButton:hover, #quickGameButton:hover {
+    background: crimson;
+}
+
+#createGameButton:active, #quickGameButton:hover {
+    background: crimson;
+}
+
+#logo img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#description {
+    text-align: center;
+    font-size: 32px;
+}
+
+#stats {
+    text-align: center;
+    margin-top: 10px;
+}
+
+#stats div {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px 20px;
+    background: #ffdb38;
+    border-radius: 10px;
+    text-align: center;
+}
+
+#stats p {
+    font-size: 28px;
+    display: inline;
+}
+
+#gameList table {
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 24px;
+}
+
+#gameList table, th, td {
+    border: 2px solid black;
+    border-collapse: collapse;
+}
+
+#gameList th, td {
+    text-align: center;
+    padding: 10px;
+}
+
+#gameList th {
+    background-color:rgb(183, 202, 236);
+}
+
+#gameList tr:nth-child(odd) {
+    background-color: #e6e6e6;
+}
+
+#gameList tr:hover {
+    background-color: #ddd;
+}
+
+#gameCode {
+    text-align: center;
+}
+
+#gameCode button, .tableButton {
+    background: #FFBF00;
+    color: #000;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 10px;
+    font-family: 'Bangers', cursive;
+    border: none;
+}
+
+#gameCode button:hover, .tableButton:hover {
+    background: crimson;
+}
+
+#message {
+    color: crimson;
+    display: none;
+}
