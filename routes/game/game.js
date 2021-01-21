@@ -188,10 +188,6 @@ function movesToAbsolute(color, moves) {
 
 // performs a dice roll for a player
 async function doDiceRoll(gameId, playerId) {
-    // do dice roll
-    var roll = 1 + Math.round(Math.random() * 5)
-    console.log(`Dice roll: ${roll}`)
-
     // get game information
     var gameInfo = await getGameInfo(gameId)
     var board = await getGameBoard(gameId)
@@ -202,6 +198,17 @@ async function doDiceRoll(gameId, playerId) {
             break;
         }
     }
+
+    // do dice roll
+    var roll;
+    if(playerInfo.p0 == -1 && playerInfo.p1 == -1 && playerInfo.p2 == -1 && playerInfo.p3 == -1) {
+        // easier odds for starters
+        roll = 3 + Math.round(Math.random() * 3)
+    } else {
+        // regular odds
+        roll = 1 + Math.round(Math.random() * 5)
+    }
+    console.log(`Dice roll: ${roll}`)
 
     // reset consecutive sixes
     if(roll != 6) {

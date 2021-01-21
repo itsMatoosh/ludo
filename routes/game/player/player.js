@@ -34,6 +34,12 @@ async function createNickname(gameId, playerId, nickname) {
 
 // updates a nickname
 async function updateNickname(gameId, playerId, nickname) {
+    // sanitize nicknames
+    if(nickname.length > 15) {
+        nickname = nickname.substr(0,15)+'...';
+    }
+    nickname = nickname.replace(/[^a-zA-Z0-9 ]/g, "")
+
     await db.run(`UPDATE nicknames SET nickname = ? WHERE player = ?`, [nickname, playerId])
     nicknameChanged.emit('nicknameChanged', gameId, playerId)
 }
