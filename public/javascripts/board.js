@@ -129,8 +129,6 @@ async function assignName() {
     console.log(nickname);
 
     await axios.put(`${backAddr}/games/${gameId}/player/${playerId}/nickname`, {nickname});
-    var checkname = await axios.get(`${backAddr}/games/${gameId}/player/${playerId}/nickname`);
-    console.log(checkname.data.nickname);
 }
 
 // update name field, called in assignName()
