@@ -131,6 +131,7 @@ async function assignName(e) {
 
     await axios.put(`${backAddr}/games/${gameId}/player/${playerId}/nickname`, {nickname});
 }
+document.getElementById("nicknameForm").onsubmit = (event) => assignName(event)
 
 // update name field, called in assignName()
 async function updateNames() {
