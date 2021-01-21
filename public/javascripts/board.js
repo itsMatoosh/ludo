@@ -1,5 +1,5 @@
 const backHost = 'lu-woah.herokuapp.com'
-const backAddr = `http://${backHost}`
+const backAddr = `https://${backHost}`
 
 // constants
 const PLAYER_NAME_PLACEHOLDER = 'Waiting for players...'

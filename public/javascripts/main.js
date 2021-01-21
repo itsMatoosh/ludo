@@ -1,5 +1,5 @@
 const backHost = 'lu-woah.herokuapp.com'
-const backAddr = `http://${backHost}/games`
+const backAddr = `https://${backHost}/games`
 
 // argument false: createGame / true: quickGame
 async function gameCreation(quickGame) {
