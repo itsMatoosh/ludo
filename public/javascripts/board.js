@@ -104,12 +104,12 @@ function connect() {
     }
     socket.onerror = (event) => {
         // return to main page on error
-        window.location.replace('index.html')
+        window.location.replace('/')
         alert(`An error has occurred on the server, we are sending you to the main page.\n${event.reason}`);
     }
     socket.onclose = (event) => {
         // return to main page when we lost connection
-        window.location.replace('index.html')
+        window.location.replace('/')
         alert(event.reason);
     }
 }
@@ -124,12 +124,14 @@ function validate() {
 }
 
 // assign nickname to players (from modal)
-async function assignName() {
+async function assignName(e) {
+    e.preventDefault();
     var nickname = document.getElementById("nameField").value;
     console.log(nickname);
 
     await axios.put(`${backAddr}/games/${gameId}/player/${playerId}/nickname`, {nickname});
 }
+document.getElementById("nicknameForm").onsubmit = (event) => assignName(event)
 
 // update name field, called in assignName()
 async function updateNames() {

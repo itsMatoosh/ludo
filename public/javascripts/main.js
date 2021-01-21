@@ -20,22 +20,8 @@ quickGame.onclick = () => {
     gameCreation(true);
 } 
 
-let onGoingGames = document.querySelector("#onGoingGames");
-let playersOnline = document.querySelector("#playersOnline");
-let completedGames = document.querySelector("#completedGames");
-
-
 async function updateMain() {
     var games = await axios.get(`${backAddr}`);
-    onGoingGames.innerHTML = games.data.length.toString();
-    var playerNum = 0;
-    for (let i = 0; i < games.data.length; i++) {
-        playerNum += games.data[i].players;
-    }
-    playersOnline.innerHTML = playerNum.toString();
-    var stats = await axios.get(`https://${backHost}/stats`);
-    completedGames.innerHTML = stats.data.gamesCompleted;
-
     // updating game list  
     // <tr>
     //     <td>game cdoe</td>
