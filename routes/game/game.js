@@ -455,11 +455,16 @@ function checkPawnMurder(board, playerId, position, spaces) {
     return undefined
 }
 
+// gets a list of games with player count
+async function getOnGoingGames() {
+    return await db.all(`SELECT gameId, COUNT(player) AS players FROM board WHERE player > -1 GROUP BY gameId`)
+}
+ 
 // set up game routes
 router.get('/', async (req, res) => {
     // return list of all ongoing games
     try {
-        res.send(await db.all(`SELECT gameId, COUNT(player) AS players FROM board WHERE player > -1 GROUP BY gameId`))
+        res.send(await getOnGoingGames())
     } catch (err) {
         console.error('Error getting list of games!', err)
         res.status(500)
@@ -737,3 +742,4 @@ router.use('/:id/player', playerRouter.router)
 // export init and router
 module.exports.router = router
 module.exports.init = init
+module.exports.getOnGoingGames = getOnGoingGames

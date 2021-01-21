@@ -10,8 +10,17 @@ async function init(database) {
     await db.run(`CREATE TABLE IF NOT EXISTS stats (gamesCompleted int)`)
 }
 
+// gets all game stats
 async function getGameStats() {
-    return await db.get('SELECT * FROM stats')
+    var data = await db.get('SELECT * FROM stats')
+    if(data != undefined) {
+        return data
+    } else {
+        return {
+            gamesCompleted: 0
+        }
+    }
+
 }
 
 // called on a completed games
@@ -30,16 +39,10 @@ async function onGameCompleted() {
 
 // return game stats
 router.get('/', async (req, res) => {
-    var stats = await getGameStats()
-    if(stats != undefined) {
-        res.send(query)
-    } else {
-        res.send({
-            gamesCompleted: 0
-        })
-    }
+    res.send(await getGameStats())
 })
 
 module.exports.router = router
 module.exports.onGameCompleted = onGameCompleted
+module.exports.getGameStats = getGameStats
 module.exports.init = init

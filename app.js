@@ -21,6 +21,19 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // set up routes
+app.get('/', async (req, res) => {
+  var stats = await statsRouter.getGameStats()
+  var games = await gameRouter.getOnGoingGames()
+  var players = 0
+  for(game of games) {
+    player += game.players
+  }
+  res.render('index', {
+    ongoingGames: games.length,
+    playersOnline: players,
+    completedGames: stats.gamesCompleted
+  })
+})
 app.use('/games', gameRouter.router)
 app.use('/stats', statsRouter.router)
 
