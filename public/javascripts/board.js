@@ -115,10 +115,19 @@ function connect() {
 }
 connect();
 
+function validate() {
+    if (!/^[a-zA-Z0-9 ]*$/g.test(document.getElementById("nameField").value)) {
+        alert("Invalid characters");
+        return false;
+    }
+    return true;
+}
+
 // assign nickname to players (from modal)
 async function assignName() {
     var nickname = document.getElementById("nameField").value;
     console.log(nickname);
+
     await axios.put(`${backAddr}/games/${gameId}/player/${playerId}/nickname`, {nickname});
     var checkname = await axios.get(`${backAddr}/games/${gameId}/player/${playerId}/nickname`);
     console.log(checkname.data.nickname);
@@ -145,9 +154,17 @@ async function updateNames() {
 var modal = document.getElementById("createGame");
 var close = document.getElementsByClassName("close")[0];
 var submitButton = document.getElementById("submitButton");
+var textfield = document.getElementById("nameField");
+
+textfield.onsubmit = function() {
+    submitButton.click();
+}
+
 submitButton.onclick = function() {
-    assignName();
-    modal.style.display = "none";
+    if (validate()) {
+        assignName();
+        modal.style.display = "none";
+    }
 }
 
 close.onclick = function() {
