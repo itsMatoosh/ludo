@@ -8,6 +8,7 @@ var app = express();
 var expressWs = require('express-ws')(app)
 
 var gameRouter = require('./routes/game/game');
+var statsRouter = require('./routes/stats/stats');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -21,11 +22,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // set up routes
 app.use('/games', gameRouter.router)
+app.use('/stats', statsRouter.router)
 
 // set up database for storing game info
 const Database = require('sqlite-async')
-Database.open(':memory:').then((db) => {
-  gameRouter.init(db)
+Database.open(':memory:').then(async (db) => {
+  await gameRouter.init(db)
+  await statsRouter.init(db)
 })
 
 // catch 404 and forward to error handler
