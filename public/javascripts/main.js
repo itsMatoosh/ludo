@@ -21,6 +21,7 @@ quickGame.onclick = () => {
 } 
 
 async function updateMain() {
+    var games = await axios.get(`${backAddr}`);
     // updating game list  
     // <tr>
     //     <td>game cdoe</td>
