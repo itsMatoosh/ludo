@@ -130,8 +130,9 @@ async function createPlayer(gameId, playerId) {
 async function removePlayer(playerId) {
     console.log(`Player ${playerId} left the game!`)
 
-    // get game which the player was playing
-    var gameId = (await db.get('SELECT gameId FROM board WHERE player = ?', [playerId]))?.gameId
+    var query = await db.get('SELECT gameId FROM board WHERE player = ?', [playerId])
+    var gameId;
+    if(query != undefined) gameId = query.gameId
     var lastGhostId = -1
     if(gameId) {
         // check if game should now be removed
