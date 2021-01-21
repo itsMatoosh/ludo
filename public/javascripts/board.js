@@ -128,16 +128,6 @@ async function assignName() {
     var nickname = document.getElementById("nameField").value;
     console.log(nickname);
 
-    nickname.addEventListener("keyup", function(event) {
-        if (event.keyCode === 13) {
-            // Cancel the default action, if needed
-            event.preventDefault();
-            // Trigger the button element with a click
-
-            submitButton.click();
-        }
-    });
-
     await axios.put(`${backAddr}/games/${gameId}/player/${playerId}/nickname`, {nickname});
     var checkname = await axios.get(`${backAddr}/games/${gameId}/player/${playerId}/nickname`);
     console.log(checkname.data.nickname);
@@ -164,6 +154,17 @@ async function updateNames() {
 var modal = document.getElementById("createGame");
 var close = document.getElementsByClassName("close")[0];
 var submitButton = document.getElementById("submitButton");
+
+nickname.addEventListener("keyup", function(event) {
+    if (event.keyCode === 13) {
+        // Cancel the default action, if needed
+        event.preventDefault();
+        // Trigger the button element with a click
+
+        submitButton.click();
+    }
+});
+
 submitButton.onclick = function() {
     if (validate()) {
         assignName();
