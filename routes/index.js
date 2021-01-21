@@ -1,9 +1,31 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express')
+var cors = require('cors');
+var bodyParser = require('body-parser')
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+// sets up the server
+async function setup() {
+    // express setup
+    const app = express()
+    var expressWs = require('express-ws')(app)
 
-module.exports = router;
+    // set up database for storing game info
+    const Database = require('sqlite-async')
+    var db = await Database.open(':memory:')
+    module.exports.db = db
+
+    // set up body parsing
+    app.use(bodyParser.json())
+
+    // allow cross-domain access
+    app.use(cors())
+
+    // set up routing
+    var gameManager = require('./game/game')
+    app.use('/games', gameManager)
+
+    app.listen(process.env.PORT, '0.0.0.0', () => {
+        console.log(`LUDO backend running...`)
+    })
+}
+
+setup()
